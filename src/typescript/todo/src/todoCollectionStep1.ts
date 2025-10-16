@@ -1,5 +1,5 @@
 // data model of a collection of todo item(s)
-import { TodoItem } from "./todoItem";
+import { TodoItem } from "./todoItem.js";
 
 export class TodoCollection {
   private nextId: number = 0;
@@ -16,7 +16,7 @@ export class TodoCollection {
     return this.nextId;
   }
 
-  getTodoById(id: number): TodoItem {
+  getTodoById(id: number): TodoItem | undefined {
     return this.todoItems.find((item) => item.id === id);
   }
 

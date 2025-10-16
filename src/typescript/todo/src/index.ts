@@ -1,7 +1,7 @@
-import * as inquirer from "inquirer";
-import { TodoItem } from "./todoItem";
-import { TodoCollection } from "./todoCollection";
-import { JsonTodoCollection } from "./jsonTodoCollection";
+import { input, checkbox, select } from "@inquirer/prompts";
+import { TodoItem } from "./todoItem.js";
+import { TodoCollection } from "./todoCollection.js";
+import { JsonTodoCollection } from "./jsonTodoCollection.js";
 
 // list of TodoItem data structure, instance of TodoItem can be created using
 // `new` keyword
@@ -31,86 +31,70 @@ enum Commands {
   Quit = "Quit",
 }
 
-function promptAdd(): void {
+async function promptAdd(): Promise<void> {
   console.clear();
-  inquirer
-    .prompt({ type: "input", name: "add", message: "Enter task:" })
-    .then((answers: Commands) => {
-      if (answers["add"] !== "") {
-        collection.addTodo(answers["add"]);
-      }
-      promptUser();
-    });
+  const answer = await input({ message: "Enter task:" });
+  if (answer !== "") {
+    collection.addTodo(answer);
+  }
+  await promptUser();
 }
 
-function promptComplete(): void {
+async function promptComplete(): Promise<void> {
   console.clear();
-  inquirer
-    .prompt({
-      type: "checkbox",
-      name: "MarkCompleted",
-      message: "Mark Task as Complete",
-      choices: collection.getTodoList(showCompleted).map((item: TodoItem) => ({
-        name: item.task,
-        value: item.id,
-        checked: item.complete,
-      })),
-    })
-    .then((answers: number) => {
-      let completedTasks = answers["MarkCompleted"] as number[];
-      collection
-        .getTodoList(true)
-        .forEach((item: TodoItem) =>
-          collection.markComplete(
-            item.id,
-            completedTasks.find((id) => id === item.id) != undefined
-          )
-        );
-      promptUser();
-    });
+  const answers = await checkbox({
+    message: "Mark Task as Complete",
+    choices: collection.getTodoList(showCompleted).map((item: TodoItem) => ({
+      name: item.task,
+      value: item.id,
+      checked: item.complete,
+    })),
+  });
+  let completedTasks = answers as number[];
+  collection
+    .getTodoList(true)
+    .forEach((item: TodoItem) =>
+      collection.markComplete(
+        item.id,
+        completedTasks.find((id) => id === item.id) != undefined
+      )
+    );
+  await promptUser();
 }
 
-function promptUser(): void {
+async function promptUser(): Promise<void> {
   // console.clear();
   console.log("\nFrom prompt user function:");
   displayTodoList();
 
-  inquirer
-    .prompt({
-      type: "list",
-      name: "command",
-      message: "Choose option",
-      choices: Object.values(Commands),
-    })
-    .then((answers: Commands) => {
-      // if (answers["command"] !== Commands.Quit) {
-      //   promptUser();
-      // }
+  const answer = await select({
+    message: "Choose option",
+    choices: Object.values(Commands).map((cmd) => ({ name: cmd, value: cmd })),
+  });
 
-      switch (answers["command"]) {
-        case Commands.Toggle:
-          showCompleted = !showCompleted;
-          promptUser();
-          break;
+  switch (answer) {
+    case Commands.Toggle:
+      showCompleted = !showCompleted;
+      await promptUser();
+      break;
 
-        case Commands.Add:
-          promptAdd();
-          break;
+    case Commands.Add:
+      await promptAdd();
+      break;
 
-        case Commands.MarkCompleted:
-          if (collection.getTaskCounts().incomplete > 0) {
-            promptComplete();
-          } else {
-            promptUser();
-          }
-          break;
-
-        case Commands.Purge:
-          collection.removeComplete();
-          promptUser();
-          break;
+    case Commands.MarkCompleted:
+      if (collection.getTaskCounts().incomplete > 0) {
+        await promptComplete();
+      } else {
+        await promptUser();
       }
-    });
+      break;
+
+    case Commands.Purge:
+      collection.removeComplete();
+      await promptUser();
+      break;
+  }
 }
 
 // let collection = new TodoCollection("Pranab", todoList);

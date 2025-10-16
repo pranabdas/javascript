@@ -1,6 +1,4 @@
-import React from "react";
-
-function App(): JSX.Element {
+function App() {
   return (
     <>
       <p>Hello React.</p>

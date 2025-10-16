@@ -16,7 +16,7 @@ export class TodoItem {
   // typescript assumes all methods and properties are public by default
   printDetails(): void {
     console.log(
-      `${this.id}  ${this.task}${this.complete ?"  (completed)" : ""}`
+      `${this.id}  ${this.task}${this.complete ? "  (completed)" : ""}`
     );
   }
 }
