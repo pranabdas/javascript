@@ -61,6 +61,8 @@ Create source files under `src`. Compile typescript:
 npm run tsc
 ```
 
+Run `npm run` to find available commands. After compilation, run `npm start`.
+
 The compiled javascript code will be placed under `dist`. Run javascript:
 ```console
 node dist/index.js
