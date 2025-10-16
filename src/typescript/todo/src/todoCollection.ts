@@ -1,7 +1,7 @@
 // data model for a collection of todo items
 // also see how this file was in previous step: todoCollectionStep1.ts
 // here we will store the TodoCollection in a new way so that `Map` can be used
-import { TodoItem } from "./todoItem";
+import { TodoItem } from "./todoItem.js";
 
 // object literal (alternative to class with only data members)
 type ItemCount = {
@@ -36,7 +36,7 @@ export class TodoCollection {
     return this.nextId;
   }
 
-  getTodoById(id: number): TodoItem {
+  getTodoById(id: number): TodoItem | undefined {
     return this.itemMap.get(id);
   }
 

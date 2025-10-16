@@ -8,7 +8,7 @@
     {
       "id": 1,
       "task": "Eat breakfast",
-      "complete": false
+      "complete": true
     },
     {
       "id": 2,
@@ -23,6 +23,16 @@
     {
       "id": 4,
       "task": "Go for run",
+      "complete": false
+    },
+    {
+      "id": 5,
+      "task": "Go for run",
+      "complete": false
+    },
+    {
+      "id": 6,
+      "task": "Test new task",
       "complete": false
     }
   ]

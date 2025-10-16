@@ -36,12 +36,23 @@ Create `.gitignore` file and add `node_modules` folder to it.
 Create `tsconfig.json`:
 ```json
 {
- "compilerOptions": {
- "target": "es2018",
- "outDir": "./dist",
- "rootDir": "./src",
- "module": "commonjs"
- }
+  "compilerOptions": {
+    "target": "ES2022",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true
+  }
+}
+```
+
+Update `package.json` to use ESM:
+```json
+{
+  "type": "module"
 }
 ```
 
@@ -50,23 +61,21 @@ Create source files under `src`. Compile typescript:
 npm run tsc
 ```
 
-The compiles javascript code will be placed under `dist`. Run javascript:
+The compiled javascript code will be placed under `dist`. Run javascript:
 ```console
 node dist/index.js
 ```
 
 Third party packages:
 ```console
-npm i inquirer@6.5.2
+npm i inquirer@latest
 ```
 
-In order to use the latest version of inquirer, we need to update the project
-from CommonJS to ESM.
+The latest version of inquirer (v12+) uses ESM modules.
 
 Install lowdb for persistent storage:
 ```console
-npm i lowdb@1
-npm i --save-dev @types/lowdb
+npm i lowdb@latest
 ```
 
-Need to refactor code in order to use latest version of lowdb.
+The latest version of lowdb (v7+) uses ESM modules and the new API with `LowSync` and `JSONFileSync`.

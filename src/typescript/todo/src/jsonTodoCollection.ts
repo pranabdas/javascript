@@ -1,20 +1,22 @@
 // store application data in a file named `Todos.json`
-import { TodoItem } from "./todoItem";
-import { TodoCollection } from "./todoCollection";
-import * as lowdb from "lowdb";
-import * as FileSync from "lowdb/adapters/FileSync";
+import { TodoItem } from "./todoItem.js";
+import { TodoCollection } from "./todoCollection.js";
+import { LowSync } from "lowdb";
+import { JSONFileSync } from "lowdb/node";
 
 type schemaType = {
   tasks: { id: number; task: string; complete: boolean }[];
 };
 
 export class JsonTodoCollection extends TodoCollection {
-  private database: lowdb.LowdbSync<schemaType>;
+  private database: LowSync<schemaType>;
   constructor(public userName: string, todoItems: TodoItem[] = []) {
     super(userName, []);
-    this.database = lowdb(new FileSync("Todos.json"));
-    if (this.database.has("tasks").value()) {
-      let dbItems = this.database.get("tasks").value();
+    const adapter = new JSONFileSync<schemaType>("Todos.json");
+    this.database = new LowSync(adapter, { tasks: [] });
+    this.database.read();
+    if (this.database.data.tasks && this.database.data.tasks.length > 0) {
+      let dbItems = this.database.data.tasks;
       dbItems.forEach((item) =>
         this.itemMap.set(
           item.id,
@@ -22,7 +24,12 @@ export class JsonTodoCollection extends TodoCollection {
         )
       );
     } else {
-      this.database.set("tasks", todoItems).write();
+      this.database.data.tasks = todoItems.map((item) => ({
+        id: item.id,
+        task: item.task,
+        complete: item.complete,
+      }));
+      this.database.write();
       todoItems.forEach((item) => this.itemMap.set(item.id, item));
     }
   }
@@ -40,6 +47,11 @@ export class JsonTodoCollection extends TodoCollection {
     this.storeTasks();
   }
   private storeTasks() {
-    this.database.set("tasks", [...this.itemMap.values()]).write();
+    this.database.data.tasks = [...this.itemMap.values()].map((item) => ({
+      id: item.id,
+      task: item.task,
+      complete: item.complete,
+    }));
+    this.database.write();
   }
 }
