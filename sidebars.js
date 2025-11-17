@@ -90,9 +90,10 @@ module.exports = {
         type: "generated-index",
       },
       items: [
-        "misc/node-uninstall",
         "misc/npm-update",
+        "misc/cypress",
         "misc/cspell",
+        "misc/node-uninstall",
       ],
     },
     "resources",
