@@ -1,6 +1,6 @@
 ---
-title: Uninstalling nodejs and npm
-sidebar_label: Uninstall node
+title: Completely uninstalling node.js and npm
+sidebar_label: Uninstalling node.js
 ---
 
 ### Clean NPM/Yarn cache
